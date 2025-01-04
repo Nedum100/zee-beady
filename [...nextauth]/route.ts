@@ -1,53 +1,96 @@
-import { NextResponse } from "next/server";
-import { sign } from "jsonwebtoken";
-import connectDB from "@/lib/db";
-import User from "@/models/User";
+// app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { connectToDatabase } from "@/lib/db"; // Assuming this connects to your database
+import User from "@/models/User"; // Assuming this is your user model
+import bcrypt from "bcryptjs";
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const { email, password } = body;
+const handler = NextAuth({
+    providers: [
+        CredentialsProvider({
+            name: "credentials",
+            credentials: {
+                email: {
+                    label: "Email",
+                    type: "text",
+                    placeholder: "john.doe@example.com",
+                },
+                password: { label: "Password", type: "password" },
+            },
+            async authorize(credentials: any) {
+                try {
+                    // 1. Establish database connection
+                    console.log("Attempting Database connection")
+                    await connectToDatabase();
+                    console.log("Connection successful");
+                    // 2. Find the user in the database based on email
+                    const user = await User.findOne({ email: credentials?.email });
+                    console.log("Credentials: ", credentials);
+                    console.log("User: ", user)
 
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
-    }
+                    // 3. Check if the user exists
+                    if (!user) {
+                        // If the user is not found, return null to signal failure
+                        console.log("User not found");
+                        return null;
+                    }
+                    console.log("User found")
 
-    await connectDB();
+                    // 4. Compare the provided password with the stored hash
+                    const isValid = await bcrypt.compare(
+                        credentials?.password,
+                        user.password,
+                    );
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-    }
+                    console.log("isValid", isValid)
 
-    const isValid = await user.comparePassword(password);
-    if (!isValid) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-    }
+                    // 5. Check if the password matches
+                    if (!isValid) {
+                        // If the passwords don't match, return null to signal failure
+                        console.log("Passwords do not match")
+                        return null;
+                    }
 
-    // Create the JWT token
-    const token = sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
+                    // 6. If authentication is successful, return user data for the session
+                    console.log("Successfully logged in")
 
-    // Use NextResponse to set the cookie
-    const response = NextResponse.json({
-      message: "Login successful",
-      user: { id: user._id, email: user.email, name: user.name, role: user.role },
-    });
+                    return {
+                        id: user._id.toString(),
+                        email: user.email,
+                        name: user.name,
+                        role: user.role,
+                    };
+                } catch (error) {
+                    console.error("Auth error:", error);
+                    return null;
+                }
+            },
+        }),
+    ],
+    session: {
+        strategy: "jwt",
+        maxAge: 30 * 60,
+        updateAge: 24 * 60 * 60,
+    },
+    pages: {
+        signIn: "/login",
+        error: "/auth/error",
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.role = user.role;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            // Access the user's id and role directly from the token object
+            session.user.id = token.id as string;
+            session.user.role = token.role as string;
+            return session;
+        },
+    },
+});
 
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24, // 1 day
-    });
-
-    return response;
-  } catch (error: any) {
-    console.error("Error in /api/auth/login:", error.message);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
-  }
-}
+export { handler as GET, handler as POST };

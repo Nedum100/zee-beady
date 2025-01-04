@@ -31,9 +31,10 @@ export default async function CategoryPage({
 }) {
   // Normalize category names
   const categoryMappings: { [key: string]: string } = {
-    'anklet': 'anklets',
-    'necklace': 'necklaces',
-    'bracelet': 'bracelets'
+      "necklace": 'necklaces',
+    "anklet": 'anklets',
+    "bracelet": 'bracelets',
+    'waist-bead': 'waist-beads'
   };
 
   // Get the normalized category name

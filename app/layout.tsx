@@ -7,6 +7,8 @@ import Navigation from '@/components/layout/Navigation';
 // import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { NextAuthProvider } from '@/providers/NextAuthProvider';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -23,12 +25,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ErrorBoundary>
-          <AuthProvider>
-            <Navigation /> {/* Use your custom Navbar here */}
-            <main className="min-h-screen">{children}</main>
-            <Toaster />
-            <Footer />
-          </AuthProvider>
+          <NextAuthProvider>
+            <AuthProvider>
+              <Navigation /> {/* Use your custom Navbar here */}
+              <main className="min-h-screen">{children}</main>
+              <Toaster />
+              <Footer />
+            </AuthProvider>
+          </NextAuthProvider>
         </ErrorBoundary>
       </body>
     </html>

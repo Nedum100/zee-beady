@@ -1,45 +1,24 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { routes } from '@/lib/constants/routes';
-import {
-  isStaticPath,
-  isAuthPath,
-  isPublicPath,
-  isProtectedPath,
-  handleAuthenticatedUser,
-  handleUnauthenticatedUser,
-} from '@/lib/auth/middleware-helpers';
+import { getToken } from 'next-auth/jwt';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get('token');
 
-  // Allow static files and API routes
-  if (isStaticPath(pathname)) {
+  // Allow the requests if the following is true...
+  // 1) It's a request for next-auth session & provider fetching
+  // 2) the token exists
+  if (pathname.includes('/api/auth') || token) {
     return NextResponse.next();
   }
 
-  // Allow public paths and auth paths
-  if (isPublicPath(pathname) || isAuthPath(pathname)) {
-    return NextResponse.next();
+  // Redirect them to login if they don't have token AND are requesting a protected route
+  if (!token && pathname !== '/login') {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
-
-  // Handle authenticated users
-  if (token) {
-    const authResponse = handleAuthenticatedUser(request);
-    if (authResponse) return authResponse;
-    return NextResponse.next();
-  }
-
-  // Handle unauthenticated users
-  const unauthResponse = handleUnauthenticatedUser(request);
-  if (unauthResponse) return unauthResponse;
-
-  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|BeadAssets).*)',
-  ],
+  matcher: ['/dashboard/:path*', '/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

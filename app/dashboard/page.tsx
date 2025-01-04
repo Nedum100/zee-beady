@@ -1,11 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession, signIn, SessionProvider } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { ShoppingCart, Users, TrendingUp, Activity, Package, CreditCard } from 'lucide-react';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { Card } from '@/components/ui/card';
 
-export default function DashboardPage() {
+function DashboardPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState({
     totalSales: 0,
     totalOrders: 0,
@@ -20,14 +24,35 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
+    console.log("Session status:", status); // Add this line for debugging
+    console.log("Session data:", session); // Add this line for debugging
+  }, [status, session]);
+
+  useEffect(() => {
     const fetchStats = async () => {
       const response = await fetch('/api/dashboard/stats');
       const data = await response.json();
       setStats(data);
     };
     
-    fetchStats();
-  }, []);
+    if (status === 'authenticated' && session) {
+      fetchStats();
+    }
+  }, [status, session]);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'unauthenticated') {
+    return <div>Redirecting to login...</div>; // Show a message while redirecting
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -106,5 +131,13 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <SessionProvider>
+      <DashboardPage />
+    </SessionProvider>
   );
 }
