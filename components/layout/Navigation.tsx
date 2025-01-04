@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, LogOut, Settings, ShoppingCart } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/lib/auth/AuthContext";
+import { signOut, useSession } from "next-auth/react";
 import Cart from "@/components/Cart";
 import SearchDialog from "@/components/SearchDialog";
 import { useCart } from "@/lib/cart";
@@ -12,14 +12,15 @@ import { useCart } from "@/lib/cart";
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { user, logout, isAuthenticated } = useAuth();
+  const { data: session, status } = useSession();
   const { items } = useCart();
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = session?.user?.role === 'admin';
+  const isAuthenticated = status === 'authenticated';
 
   const handleLogout = async () => {
-    await logout();
+    await signOut({ redirect: true, callbackUrl: '/login' });
   };
 
   return (
@@ -57,7 +58,7 @@ export function Navigation() {
                   </>
                 )}
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-700">Welcome, {user?.name || user?.email}</span>
+                  <span className="text-gray-700">Welcome, {session?.user?.name || session?.user?.email}</span>
                   <SearchDialog />
                   <Button
                     variant="ghost"
@@ -182,7 +183,7 @@ export function Navigation() {
                   </Link>
                 )}
                 <div className="px-3 py-2 text-gray-700">
-                  Welcome, {user?.name || user?.email}
+                  Welcome, {session?.user?.name || session?.user?.email}
                 </div>
                 <button
                   onClick={handleLogout}

@@ -29,13 +29,20 @@ export function LoginForm() {
       if (result?.error) {
         toast({
           title: "Error",
-          description: "Invalid credentials",
+          description: result.error === "CredentialsSignin" ? "Invalid credentials" : result.error,
           variant: "destructive",
         });
       } else {
+        // Successful login
+        toast({
+          title: "Success",
+          description: "Successfully logged in",
+        });
+        router.refresh(); // Refresh to update session
         router.push("/dashboard");
       }
     } catch (error) {
+      console.error("Login error:", error);
       toast({
         title: "Error",
         description: "Something went wrong",
