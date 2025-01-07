@@ -17,7 +17,6 @@ export default function AddProduct() {
     name: "",
     description: "",
     price: "",
-    stock: "",
     category: "waist-beads",
     imageUrl: ""
   });
@@ -70,7 +69,7 @@ export default function AddProduct() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Price (₦)</label>
             <input
@@ -81,18 +80,6 @@ export default function AddProduct() {
               placeholder="0.00"
               min="0"
               step="0.01"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
-            <input
-              type="number"
-              value={formData.stock}
-              onChange={(e) => setFormData({...formData, stock: e.target.value})}
-              className="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="0"
-              min="0"
               required
             />
           </div>
