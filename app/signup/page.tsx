@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth/AuthContext';
+import { signIn } from 'next-auth/react';
 import { useAuthRedirect } from '@/lib/auth/useAuthRedirect';
 import { LoadingScreen } from '@/components/layout/LoadingScreen';
 import { Card } from '@/components/ui/card';
@@ -14,7 +14,6 @@ import { UserPlus, Loader } from 'lucide-react';
 
 export default function SignupPage() {
   const router = useRouter();
-  const { login } = useAuth();
   const { isLoading: isAuthLoading } = useAuthRedirect(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -34,27 +33,41 @@ export default function SignupPage() {
         throw new Error('Passwords do not match');
       }
 
-      const user = {
-        id: Date.now().toString(),
+      // Sign up the user
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create account');
+      }
+
+      // After successful signup, sign in the user
+      const result = await signIn('credentials', {
         email,
-        role: 'user',
-      } as const;
+        password,
+        redirect: false,
+      });
 
-      const token = btoa(
-        JSON.stringify({
-          userId: user.id,
-          email: user.email,
-          role: user.role,
-          timestamp: Date.now(),
-        })
-      );
-
-      await login(token, user);
+      if (result?.error) {
+        throw new Error(result.error);
+      }
 
       toast({
         title: 'Success',
         description: 'Account created successfully',
       });
+
+      router.push('/dashboard');
     } catch (error) {
       console.error('Signup error:', error);
       toast({
