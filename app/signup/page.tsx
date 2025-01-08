@@ -1,164 +1,163 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useAuthRedirect } from '@/lib/auth/useAuthRedirect';
+import { LoadingScreen } from '@/components/layout/LoadingScreen';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import Link from 'next/link';
+import { UserPlus, Loader } from 'lucide-react';
 
-export default function SignUpPage() {
+export default function SignupPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: ''
-  });
-  const [error, setError] = useState('');
+  const { isLoading: isAuthLoading } = useAuthRedirect(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  // Use useEffect for authentication check instead of immediate redirect
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      router.push('/dashboard');
-    }
-  }, [status, session, router]);
-
-  // Debug logging
-  useEffect(() => {
-    console.log('Auth Status:', status);
-    console.log('Session:', session);
-  }, [status, session]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirmPassword') as string;
+    const name = formData.get('name') as string;
 
     try {
-      console.log('Attempting signup with:', formData);
-      
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+
+      // Sign up the user
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+        }),
       });
-
-      const data = await response.json();
-      console.log('Signup response:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create account');
       }
 
-      // If signup is successful, sign in the user
-      console.log('Attempting signin after successful signup');
+      // After successful signup, sign in the user
       const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
+        email,
+        password,
         redirect: false,
-        callbackUrl: '/dashboard'
       });
 
-      console.log('SignIn result:', result);
-
       if (result?.error) {
-        setError(result.error);
-      } else if (result?.url) {
-        router.push(result.url);
+        throw new Error(result.error);
       }
-    } catch (err: any) {
-      console.error('Signup error:', err);
-      setError(err.message || 'An error occurred during signup');
+
+      toast({
+        title: 'Success',
+        description: 'Account created successfully',
+      });
+
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Signup error:', error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to create account',
+        variant: 'destructive',
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // If still loading the session, show loading state
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
-  // If already authenticated, don't render the form
-  if (status === 'authenticated') {
-    return null;
+  if (isAuthLoading) {
+    return <LoadingScreen />;
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 to-white px-4 py-12">
+      <Card className="max-w-lg w-full p-10 shadow-xl border border-gray-200 bg-white rounded-lg">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-extrabold text-blue-700">Create Your Account</h2>
+          <p className="text-gray-500 mt-2">Join our community and explore!</p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="name" className="sr-only">
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
-            </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Input
+              name="name"
+              type="text"
+              required
+              placeholder="Full Name"
+              className="focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
 
           <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              {isLoading ? 'Signing up...' : 'Sign up'}
-            </button>
+            <Input
+              name="email"
+              type="email"
+              required
+              placeholder="Email address"
+              className="focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
+
+          <div>
+            <Input
+              name="password"
+              type="password"
+              required
+              placeholder="Password"
+              className="focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <Input
+              name="confirmPassword"
+              type="password"
+              required
+              placeholder="Confirm Password"
+              className="focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                Creating account...
+              </>
+            ) : (
+              <>
+                <UserPlus className="mr-2 h-4 w-4" /> Sign Up
+              </>
+            )}
+          </Button>
+
+          <p className="text-center text-gray-600">
+            Already have an account?{' '}
+            <Link href="/login" className="text-blue-600 hover:text-blue-500">
+              Sign in
+            </Link>
+          </p>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }
