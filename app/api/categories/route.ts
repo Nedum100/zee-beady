@@ -11,25 +11,31 @@ export async function GET() {
         id: "Bags",
         title: "Bags",
         description: "Discover our collection of handcrafted Bags in various colors and sizes.",
-        imageUrl: "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?q=80&w=1920&auto=format"
+        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525352/zee_beady/bags/8_vhzrsl.jpg"
       },
       {
         id: "Waist Beads",
         title: "Waist Beads",
         description: "Explore our premium Waist Beads for elegant jewelry pieces.",
-        imageUrl: "https://images.unsplash.com/photo-1619533394727-57d522857f89?q=80&w=1920&auto=format"
+        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525347/zee_beady/waist%20beads/17_qyklo2.jpg"
       },
       {
         id: "Necklace",
         title: "Necklace",
         description: "Browse our selection of natural Necklace for organic designs.",
-        imageUrl: "https://images.unsplash.com/photo-1584891800774-5c3f1d2a328d?q=80&w=1920&auto=format"
+        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525354/zee_beady/necklaces/16_yd1a7x.jpg"
       },
       {
         id: "Anklet",
         title: "Anklet",
         description: "Find the perfect Anklet for your contemporary jewelry.",
-        imageUrl: "https://images.unsplash.com/photo-1619533394727-57d522857f89?q=80&w=1920&auto=format"
+        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525354/zee_beady/anklets/13_ybirjp.jpg"
+      },
+      {
+        id: "Bracelet",
+        title: "Bracelet",
+        description: "Find the bracelets for your contemporary use.",
+        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525349/zee_beady/bracelets/1_n6kads.jpg"
       }
     ];
 

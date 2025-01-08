@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CheckoutButton from "@/components/CheckoutButton";
+import Image from 'next/image';
 
 interface Product {
   featured: any;
@@ -20,24 +21,23 @@ export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null)
 
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch('/api/products');
         if (!response.ok) {
           setError(`Error fetching products, status code: ${response.status}`);
-           throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         console.log("data", data)
 
-       if (!data || !data.products) {
-           setError("Error: API did not return data, or it does not have a products property")
-           throw new Error("Error: API did not return data, or it does not have a products property");
+        if (!data || !data.products) {
+          setError("Error: API did not return data, or it does not have a products property")
+          throw new Error("Error: API did not return data, or it does not have a products property");
         }
 
-      if (!Array.isArray(data.products)) {
+        if (!Array.isArray(data.products)) {
           setError("Error: API response `products` property is not an array");
           throw new Error("Data is not an array");
         }
@@ -45,17 +45,17 @@ export default function FeaturedProducts() {
         setProducts(data.products.filter((p: Product) => p.featured).slice(0, 4));
         setError(null)
       } catch (error: any) {
-           setError(error?.message || "An unknown error occurred" );
-          console.error('Error fetching products:', error);
+        setError(error?.message || "An unknown error occurred" );
+        console.error('Error fetching products:', error);
       }
     };
 
     fetchProducts();
   }, []);
 
-   if (error) {
-        return <div>{error}</div>
-    }
+  if (error) {
+    return <div>{error}</div>
+  }
 
   return (
     <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -64,9 +64,11 @@ export default function FeaturedProducts() {
         {products.map((product) => (
           <Card key={product._id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <CardContent className="p-0">
-              <img
+              <Image
                 src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${product.cloudinaryId}`}
                 alt={product.name}
+                width={400}
+                height={400}
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">

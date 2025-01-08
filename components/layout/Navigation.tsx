@@ -30,7 +30,7 @@ export function Navigation() {
           <div className="flex items-center">
             <Link href="/">
               <img
-                src="/BeadAssets/logo.png"
+                src="https://res.cloudinary.com/dqn3vjswi/image/upload/v1736165143/zee_beady/logo/logo_oxenv8.jpg"
                 alt="Logo"
                 className="h-10 w-auto"
               />
@@ -41,6 +41,9 @@ export function Navigation() {
           <div className="hidden md:flex items-center space-x-8">
             <Link href="/" className="text-gray-700 hover:text-blue-600">
               Home
+            </Link>
+            <Link href="/waist-beads" className="text-gray-700 hover:text-blue-600">
+              Waist Beads
             </Link>
             {isAuthenticated ? (
               <>
@@ -150,6 +153,13 @@ export function Navigation() {
             >
               Home
             </Link>
+            <Link
+              href="/waist-beads"
+              className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Waist Beads
+            </Link>
             {isAuthenticated ? (
               <>
                 <Link
@@ -233,3 +243,4 @@ export function Navigation() {
 }
 
 export default Navigation;
+

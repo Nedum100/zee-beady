@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/Footer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { NextAuthProvider } from '@/providers/NextAuthProvider';
+import { Providers } from './providers'; // Import Providers
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,14 +23,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ErrorBoundary>
-          <NextAuthProvider>
+          <Providers>
             <Navigation />
             <main className="min-h-screen">{children}</main>
             <Toaster />
             <Footer />
-          </NextAuthProvider>
+          </Providers>
         </ErrorBoundary>
       </body>
-    </html>
-  );
-}
+    </html>  );}
