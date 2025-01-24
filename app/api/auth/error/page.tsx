@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 
 export default function AuthError() {
   const searchParams = useSearchParams();
-  const error = searchParams.get('error');
+  const error = searchParams?.get('error') || 'An error occurred';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -17,7 +17,7 @@ export default function AuthError() {
           <p className="mt-2 text-sm text-gray-600">
             {error === 'CredentialsSignin' 
               ? 'Invalid email or password'
-              : 'An error occurred during authentication'}
+              : error}
           </p>
         </div>
         <div className="mt-8 text-center">

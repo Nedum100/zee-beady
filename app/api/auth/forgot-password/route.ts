@@ -2,7 +2,7 @@ import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendResetEmail(email: string, token: string) {
-    try {
+async function sendResetEmail(email: string, token: string) {
+  try {
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
 
     const mailOptions = {
@@ -30,12 +30,11 @@ export async function sendResetEmail(email: string, token: string) {
       `,
     };
 
-
-        await transporter.sendMail(mailOptions);
-    } catch(error) {
-        console.error("Error sending reset email", error);
-        throw error;
-    }
+    await transporter.sendMail(mailOptions);
+  } catch(error) {
+    console.error("Error sending reset email", error);
+    throw error;
+  }
 }
 
 export async function POST(request: Request) {
@@ -45,21 +44,17 @@ export async function POST(request: Request) {
 
     const user = await User.findOne({ email });
     if (!user) {
-      // Return success even if user not found (security best practice)
       return NextResponse.json({ message: "If an account exists, a reset link has been sent." });
     }
 
-    // Generate reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
 
-    // Save token to user
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetTokenExpiry;
     await user.save();
 
-    // Send email
-     await sendResetEmail(email, resetToken);
+    await sendResetEmail(email, resetToken);
 
     return NextResponse.json({ message: "If an account exists, a reset link has been sent." });
   } catch (error) {
