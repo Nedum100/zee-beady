@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/lib/cart';
+import { formatPrice } from '@/lib/utils';
 
 interface Product {
   _id: string;
@@ -94,7 +95,7 @@ export default function ProductsPage() {
             />
             <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
             <p className="text-muted-foreground mb-2">{product.description}</p>
-            <p className="font-semibold mb-2">${product.price.toFixed(2)}</p>
+            <p className="font-semibold mb-2">₦{formatPrice(product.price)}</p>
             <p className="text-sm text-muted-foreground mb-4">
               Category: {product.category}
             </p>

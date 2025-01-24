@@ -11,10 +11,10 @@ export default function AboutPage() {
           <h1 className="text-4xl font-bold text-blue-900 mb-6">About Zea_Beady</h1>
           <div className="space-y-4 text-gray-600">
             <p>
-              Welcome to Zea_Beady, your go-to destination for beautifully handcrafted waist beads, anklets, bracelets, and bags.
+              Welcome to Zee_Beady, your go-to destination for beautifully handcrafted waist beads, anklets, bracelets, and bags.
             </p>
             <p>
-              At Zea_Beady, we celebrate creativity and self-expression through our unique and elegant designs. Whether you're looking to accessorize with vibrant beads or carry a statement bag, we have something for everyone.
+              At Zee_Beady, we celebrate creativity and self-expression through our unique and elegant designs. Whether you're looking to accessorize with vibrant beads or carry a statement bag, we have something for everyone.
             </p>
             <p>
               Each piece is thoughtfully designed and crafted with care, combining traditional artistry with contemporary styles to create accessories that are as versatile as they are stunning.

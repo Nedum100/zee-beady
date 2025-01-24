@@ -28,22 +28,26 @@ const userSchema = new mongoose.Schema({
 
 // Add password comparison method
 userSchema.methods.comparePassword = async function(candidatePassword: string) {
-  console.log("Comparing Password:", candidatePassword, "Stored Hash:", this.password);
+  console.log("Comparing passwords:");
+  console.log("Candidate password:", candidatePassword);
+  console.log("Stored hash:", this.password);
+  
   try {
-     const result = await bcrypt.compare(candidatePassword, this.password);
-     console.log("Password match result:", result);
-     return result;
-  } catch (error){
-    console.error("Error comparing password:", error);
+    const isValid = await bcrypt.compare(candidatePassword, this.password);
+    console.log("Password comparison result:", isValid);
+    return isValid;
+  } catch (error) {
+    console.error("Password comparison error:", error);
     return false;
   }
 };
 
-// Add password hashing pre-save
+// Pre-save hook for password hashing
 userSchema.pre('save', async function(next) {
   if (this.isModified('password')) {
-     const hash = await bcrypt.hash(this.password, 10);
-      console.log("Hashing password:", this.password, "Resulting Hash:", hash);
+    console.log("Hashing new password");
+    const hash = await bcrypt.hash(this.password, 10);
+    console.log("Generated hash:", hash);
     this.password = hash;
   }
   next();

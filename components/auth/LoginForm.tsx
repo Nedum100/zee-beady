@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { FcGoogle } from "react-icons/fc";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -53,16 +54,18 @@ export function LoginForm() {
     }
   };
 
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: "/" });
+  };
+
   return (
-    <>
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-extrabold text-blue-600">Welcome Back</h1>
-        <p className="text-gray-600 mt-2">
-          Sign in to continue to your account
-        </p>
+    <div className="max-w-md w-full space-y-8">
+      <div className="text-center">
+        <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome Back</h2>
+        <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
@@ -110,15 +113,34 @@ export function LoginForm() {
         </div>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
-        Don&apos;t have an account?{' '}
-        <Link
-          href="/signup"
-          className="font-medium text-blue-600 hover:text-blue-500"
-        >
-          Sign up
+      <div className="mt-6">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <Button
+            onClick={handleGoogleSignIn}
+            type="button"
+            className="w-full flex items-center justify-center gap-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          >
+            <FcGoogle className="h-5 w-5" />
+            Sign in with Google
+          </Button>
+        </div>
+      </div>
+
+      <p className="mt-2 text-center text-sm text-gray-600">
+        Don't have an account?{" "}
+        <Link href="/signup" className="text-blue-600 hover:text-blue-500">
+          Create an account
         </Link>
       </p>
-    </>
+    </div>
   );
 }

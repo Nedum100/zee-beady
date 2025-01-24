@@ -7,40 +7,40 @@ import { CldImage } from 'next-cloudinary';
 
 const categories = [
   {
-    name: "Bags",
+    name: "waist Beads",
     icon: Circle,
-    description: "Handcrafted beaded bags and purses",
-    href: "/categories/bags",
-    cloudinaryId: "zee_beady/bags/8_vhzrsl",
-  },
-  {
-    name: "Bracelets",
-    icon: Gem,
-    description: "Beautiful handmade bracelets",
-    href: "/categories/bracelets",
-    cloudinaryId: "zee_beady/bracelets/1_n6kads",
-  },
-  {
-    name: "Anklets",
-    icon: Hexagon,
-    description: "Elegant anklets for every occasion",
-    href: "/categories/anklets",
-    cloudinaryId: "zee_beady/anklets/13_ybirjp",
-  },
-  {
-    name: "Necklaces",
-    icon: Star,
-    description: "Stunning beaded necklaces",
-    href: "/categories/necklaces",
-    cloudinaryId: "zee_beady/necklaces/16_yd1a7x",
-  },
-  {
-    name: "Waist Beads",
-    icon: Circle,
-    description: "Handcrafted waist beads",
+    description: "Waist Beads for contemporary jewelry",
     href: "/categories/waist-beads",
-    cloudinaryId: "zee_beady/waist beads/17_qyklo2",
-  }
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1736857658/zee_beady/waist%20beads/Waist%20bead%203.jpg"
+  },
+  {
+    name: "bracelets",
+    icon: Circle,
+    description: "Handcrafted Bracelets in various colors and sizes",
+    href: "/categories/bracelets",
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525349/zee_beady/bracelets/1_n6kads.jpg"
+  },
+  {
+    name: "necklace",
+    icon: Gem,
+    description: "Premium necklaces for elegant jewelry pieces",
+    href: "/categories/necklace",
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525354/zee_beady/necklaces/16_yd1a7x.jpg"
+  },
+  {
+    name: "anklet",
+    icon: Hexagon,
+    description: "Natural anklets for your legs",
+    href: "/categories/anklet",
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1736857658/zee_beady/anklets/Anklet%201.jpg"
+  },
+  {
+    name: "bags",
+    icon: Star,
+    description: "Bags for contemporary jewelry",
+    href: "/categories/bags",
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525352/zee_beady/bags/8_vhzrsl.jpg"
+  },
 ];
 
 export default function CategoriesPage() {
@@ -55,7 +55,7 @@ export default function CategoriesPage() {
                 <CldImage
                   width="800"
                   height="600"
-                  src={category.cloudinaryId}
+                  src={category.imageUrl}
                   alt={category.name}
                   className="w-full h-full object-cover"
                 />

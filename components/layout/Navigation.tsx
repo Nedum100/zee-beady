@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, Settings, ShoppingCart } from "lucide-react";
+import { Menu, LogOut, Settings, ShoppingCart, Search } from "lucide-react";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import Cart from "@/components/Cart";
-import SearchDialog from "@/components/SearchDialog";
 import { useCart } from "@/lib/cart";
+import { useRouter } from 'next/navigation';
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { data: session, status } = useSession();
   const { items } = useCart();
+  const router = useRouter();
 
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const isAdmin = session?.user?.role === 'admin';
@@ -42,27 +43,28 @@ export function Navigation() {
             <Link href="/" className="text-gray-700 hover:text-blue-600">
               Home
             </Link>
-            <Link href="/waist-beads" className="text-gray-700 hover:text-blue-600">
-              Waist Beads
-            </Link>
             {isAuthenticated ? (
               <>
                 <Link href="/products" className="text-gray-700 hover:text-blue-600">
                   Products
                 </Link>
+                <Link href="/about" className="text-gray-700 hover:text-blue-600">
+                  About
+                </Link>
+                <Link href="/contact" className="text-gray-700 hover:text-blue-600">
+                  Contact
+                </Link>
                 {isAdmin && (
                   <>
-                    <Link href="/admin" className="text-gray-700 hover:text-blue-600">
-                      <Settings className="h-5 w-5" />
-                    </Link>
                     <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
                       Dashboard
+                    </Link>
+                    <Link href="/admin" className="text-gray-700 hover:text-blue-600">
+                      <Settings className="h-5 w-5" />
                     </Link>
                   </>
                 )}
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-700">Welcome, {session?.user?.name || session?.user?.email}</span>
-                  <SearchDialog />
                   <Button
                     variant="ghost"
                     className="relative"
@@ -104,6 +106,14 @@ export function Navigation() {
                 </div>
               </>
             )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => router.push('/search')}
+              className="text-gray-700 hover:text-blue-600"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -111,11 +121,10 @@ export function Navigation() {
             {isAuthenticated && (
               <>
                 {isAdmin && (
-                  <Link href="/admin">
+                  <Link href="/dashboard">
                     <Settings className="h-5 w-5 text-gray-700" />
                   </Link>
                 )}
-                <SearchDialog />
                 <Button
                   variant="ghost"
                   className="relative"
@@ -153,13 +162,6 @@ export function Navigation() {
             >
               Home
             </Link>
-            <Link
-              href="/waist-beads"
-              className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Waist Beads
-            </Link>
             {isAuthenticated ? (
               <>
                 <Link
@@ -185,11 +187,11 @@ export function Navigation() {
                 </Link>
                 {isAdmin && (
                   <Link
-                    href="/admin"
+                    href="/dashboard"
                     className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Admin Dashboard
+                    Dashboard
                   </Link>
                 )}
                 <div className="px-3 py-2 text-gray-700">

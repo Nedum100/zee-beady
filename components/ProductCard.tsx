@@ -6,42 +6,16 @@ import { ShoppingCart } from "lucide-react";
 import { useCart, CartItem } from "@/lib/cart";
 import { useToast } from "@/components/ui/use-toast";
 import { formatPrice } from "@/lib/utils";
+import { Product } from "@/types/product";
+import ProductActions from "./ProductActions";
 
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  category: string;
-  stock: number;
-  cloudinaryId?: string;
+interface ProductCardProps {
+  product: Product;
+  onUpdate?: () => void;
+  showActions?: boolean;
 }
 
-export const CATEGORIES = {
-  "waist-beads": {
-    title: "Waist Beads",
-    description: "Beautiful waist beads collection"
-  },
-  "bracelets": {
-    title: "Bracelets",
-    description: "Handcrafted bracelets"
-  },
-  "necklaces": {
-    title: "Necklaces",
-    description: "Elegant necklaces"
-  },
-  "anklets": {
-    title: "Anklets",
-    description: "Beautiful anklets"
-  },
-  "bags": {
-    title: "Bags",
-    description: "Handcrafted bags"
-  }
-} as const;
-
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, onUpdate, showActions = false }: ProductCardProps) {
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -61,7 +35,12 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <Card>
+    <Card className="relative">
+      {showActions && (
+        <div className="absolute top-2 right-2 z-10">
+          <ProductActions product={product} onUpdate={onUpdate} />
+        </div>
+      )}
       <CardContent className="p-0">
         <img
           src={product.imageUrl}
@@ -77,6 +56,9 @@ export default function ProductCard({ product }: { product: Product }) {
           <p className="text-sm text-gray-500 mt-1">
             Category: {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
           </p>
+          <p className="text-sm text-gray-500">
+            Stock: {product.stock}
+          </p>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
@@ -86,7 +68,7 @@ export default function ProductCard({ product }: { product: Product }) {
           disabled={product.stock === 0}
         >
           <ShoppingCart className="mr-2 h-4 w-4" /> 
-          Add to Cart
+          {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
         </Button>
       </CardFooter>
     </Card>

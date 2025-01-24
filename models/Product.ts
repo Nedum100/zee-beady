@@ -1,50 +1,36 @@
 import mongoose from 'mongoose';
 
-export interface IProduct extends mongoose.Document {
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  category: string;
-  // stock: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const productSchema = new mongoose.Schema<IProduct>({
+const productSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please provide a product name'],
-    trim: true,
+    required: true
   },
   description: {
     type: String,
-    required: [true, 'Please provide a product description'],
-    trim: true,
+    required: true
   },
   price: {
     type: Number,
-    required: [true, 'Please provide a price'],
-    min: [0, 'Price cannot be negative'],
+    required: true
   },
   imageUrl: {
     type: String,
-    required: [true, 'Please provide an image URL'],
+    required: true
   },
   category: {
     type: String,
-    required: [true, 'Please provide a category'],
-    trim: true,
+    required: true,
+    enum: ['waist-beads', 'bracelets', 'necklaces', 'anklets', 'bags']
   },
-  // stock: {
-  //   type: Number,
-  //   required: [true, 'Please provide stock quantity'],
-  //   min: [0, 'Stock cannot be negative'],
-  // },
+  stock: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  cloudinaryId: String
 }, {
-  timestamps: true,
+  timestamps: true
 });
 
-const Product = mongoose.models.Product || mongoose.model<IProduct>('Product', productSchema);
-
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
 export default Product;

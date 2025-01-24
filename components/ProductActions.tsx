@@ -13,20 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Pencil, Trash2 } from "lucide-react";
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  cloudinaryId: string;
-  stock: number;
-}
+import { Product } from "@/types/product";
+import { getSession } from "next-auth/react";
 
 interface ProductActionsProps {
   product: Product;
-  onUpdate: () => void;
+  onUpdate?: () => void;
 }
 
 export default function ProductActions({ product, onUpdate }: ProductActionsProps) {
@@ -44,16 +36,23 @@ export default function ProductActions({ product, onUpdate }: ProductActionsProp
     e.preventDefault();
     setIsLoading(true);
     try {
+      const session = await getSession();
+      if (!session?.user?.role || session.user.role !== 'admin') {
+        throw new Error('Unauthorized - Admin access required');
+      }
+
       const response = await fetch(`/api/products/${product._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.user.role}`,
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update product');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update product');
       }
 
       toast({
@@ -61,11 +60,12 @@ export default function ProductActions({ product, onUpdate }: ProductActionsProp
         description: "Product updated successfully",
       });
       setIsEditOpen(false);
-      onUpdate();
+      if (onUpdate) onUpdate();
     } catch (error) {
+      console.error('Update error:', error);
       toast({
         title: "Error",
-        description: "Failed to update product",
+        description: error instanceof Error ? error.message : "Failed to update product",
         variant: "destructive",
       });
     } finally {
@@ -79,8 +79,16 @@ export default function ProductActions({ product, onUpdate }: ProductActionsProp
     }
 
     try {
+      const session = await getSession();
+      if (!session?.user) {
+        throw new Error('You must be logged in');
+      }
+
       const response = await fetch(`/api/products/${product._id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.user.role}`,
+        },
       });
 
       if (!response.ok) {
@@ -91,7 +99,7 @@ export default function ProductActions({ product, onUpdate }: ProductActionsProp
         title: "Success",
         description: "Product deleted successfully",
       });
-      onUpdate();
+      if (onUpdate) onUpdate();
     } catch (error) {
       toast({
         title: "Error",

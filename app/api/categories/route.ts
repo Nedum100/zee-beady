@@ -17,7 +17,7 @@ export async function GET() {
         id: "Waist Beads",
         title: "Waist Beads",
         description: "Explore our premium Waist Beads for elegant jewelry pieces.",
-        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525347/zee_beady/waist%20beads/17_qyklo2.jpg"
+        imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1736857658/zee_beady/waist%20beads/Waist%20bead%203.jpg"
       },
       {
         id: "Necklace",

@@ -1,13 +1,33 @@
 // app/api/auth/[...nextauth]/route.ts
 
 import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 
+interface CustomUser {
+  id: string;
+  role: string;
+  accessToken: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
+declare module "next-auth" {
+  interface Session {
+    user: CustomUser;
+  }
+}
+
 const handler = NextAuth({
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -27,14 +47,12 @@ const handler = NextAuth({
             throw new Error("Invalid email or password");
           }
 
-          const isValid = await bcrypt.compare(
-            credentials?.password,
-            user.password,
-          );
-
+          const isValid = await user.comparePassword(credentials?.password);
           if (!isValid) {
             throw new Error("Invalid email or password");
           }
+
+          console.log('Found user:', user);
 
           return {
             id: user._id.toString(),
@@ -51,7 +69,7 @@ const handler = NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
@@ -59,30 +77,30 @@ const handler = NextAuth({
     error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      if (user) {
-        // Initial sign in
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.role = user.role;
-      }
-      // For debugging
-      console.log('JWT Callback - Token:', token);
-      return token;
-    },
     async session({ session, token }) {
-      if (token && session.user) {
+      if (session?.user && token) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.role = token.role as string;
+        session.user.image = token.picture as string | undefined;
       }
-      // For debugging
-      console.log('Session Callback - Session:', session);
+      console.log('Session callback - session:', session);
       return session;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
+        console.log('JWT callback - token:', token);
+      }
+      return token;
+    },
   },
+  
   debug: process.env.NODE_ENV === 'development',
 });
 

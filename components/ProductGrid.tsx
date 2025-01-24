@@ -2,31 +2,32 @@
 
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
-
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  cloudinaryId: string;
-  description: string;
-  category: string;
-  stock: number;
-}
+import { Product } from "@/types/product";
 
 interface ProductGridProps {
   products?: Product[];
-  onUpdate?: (category?: string, searchQuery?: string) => Promise<void>;
+  onUpdate?: () => void;
   showActions?: boolean;
+  searchQuery?: string;
 }
 
 export default function ProductGrid({ 
   products = [], 
   onUpdate: fetchProducts,
-  showActions = false 
+  showActions = false,
+  searchQuery
 }: ProductGridProps) {
+  // Filter products if searchQuery exists
+  const filteredProducts = searchQuery 
+    ? products.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : products;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <ProductCard 
           key={product._id} 
           product={product} 
@@ -34,6 +35,11 @@ export default function ProductGrid({
           showActions={showActions}
         />
       ))}
+      {filteredProducts.length === 0 && (
+        <div className="col-span-full text-center py-10 text-gray-500">
+          No products found
+        </div>
+      )}
     </div>
   );
 }

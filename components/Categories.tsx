@@ -11,7 +11,7 @@ const categories = [
     icon: Circle,
     description: "Waist Beads for contemporary jewelry",
     href: "/categories/waist-beads",
-    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525347/zee_beady/waist%20beads/17_qyklo2.jpg"
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1736857658/zee_beady/waist%20beads/Waist%20bead%203.jpg"
   },
   {
     name: "bracelets",
@@ -32,7 +32,7 @@ const categories = [
     icon: Hexagon,
     description: "Natural anklets for your legs",
     href: "/categories/anklet",
-    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1732525354/zee_beady/anklets/13_ybirjp.jpg"
+    imageUrl: "https://res.cloudinary.com/dqn3vjswi/image/upload/v1736857658/zee_beady/anklets/Anklet%201.jpg"
   },
   {
     name: "bags",

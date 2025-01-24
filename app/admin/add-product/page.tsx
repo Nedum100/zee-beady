@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const categories = [
-  "waist-beads",
-  "bracelets",
-  "necklace",
-  "anklet",
-  "bags"
+  { value: 'waist-beads', label: 'Waist Beads' },
+  { value: 'bracelets', label: 'Bracelets' },
+  { value: 'necklaces', label: 'Necklaces' },
+  { value: 'anklets', label: 'Anklets' },
+  { value: 'bags', label: 'Bags' }
 ];
 
 export default function AddProduct() {
@@ -18,7 +18,8 @@ export default function AddProduct() {
     description: "",
     price: "",
     category: "waist-beads",
-    imageUrl: ""
+    imageUrl: "",
+    stock: 1
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,8 +95,8 @@ export default function AddProduct() {
             required
           >
             {categories.map((category) => (
-              <option key={category} value={category}>
-                {category.charAt(0).toUpperCase() + category.slice(1)}
+              <option key={category.value} value={category.value}>
+                {category.label}
               </option>
             ))}
           </select>

@@ -3,7 +3,8 @@ import { getToken } from 'next-auth/jwt';
 import { NextRequest } from 'next/server';
 
 // Routes that require authentication
-const protectedRoutes = ['/dashboard', '/products', '/admin'];
+const protectedRoutes = ['/products', '/admin'];
+const adminRoutes = ['/dashboard', '/admin'];
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -36,7 +37,10 @@ export async function middleware(request: NextRequest) {
   }
 
   // If trying to access admin routes without admin role
-  if (pathname.startsWith('/admin') && token?.role !== 'admin') {
+  if (
+    (pathname.startsWith('/admin') || pathname.startsWith('/dashboard')) && 
+    token?.role !== 'admin'
+  ) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 

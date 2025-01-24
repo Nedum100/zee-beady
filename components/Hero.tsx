@@ -15,7 +15,7 @@ export default function Hero() {
       <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col justify-center h-full max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-          Welcome to Zea_Beady         
+          Welcome to Zee_Beady         
           </h1>
           <p className="mt-6 text-xl text-blue-50">
           Elevate your style with our stunning collection of handcrafted beadwork! 

@@ -17,10 +17,12 @@ export default function SignupPage() {
   const { isLoading: isAuthLoading } = useAuthRedirect(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
@@ -33,7 +35,7 @@ export default function SignupPage() {
         throw new Error('Passwords do not match');
       }
 
-      // Sign up the user
+      // 1. Sign up
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
@@ -46,30 +48,24 @@ export default function SignupPage() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create account');
+        throw new Error(data.message || 'Failed to create account');
       }
 
-      // After successful signup, sign in the user
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        throw new Error(result.error);
-      }
-
+      // 2. Show success message
       toast({
         title: 'Success',
-        description: 'Account created successfully',
+        description: 'Account created successfully! Please log in.',
       });
 
-      router.push('/dashboard');
+      // 3. Redirect to login instead of auto-signing in
+      router.push('/login');
+
     } catch (error) {
       console.error('Signup error:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create account');
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to create account',
@@ -93,6 +89,11 @@ export default function SignupPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="text-red-500 mb-4 text-sm">
+              {error}
+            </div>
+          )}
           <div>
             <Input
               name="name"

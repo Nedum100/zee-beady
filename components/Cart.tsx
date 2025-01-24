@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useSession } from 'next-auth/react';
 import { 
   Sheet, 
   SheetContent, 
@@ -11,10 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 import { X, Plus, Minus, Trash2, Copy } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) {
   const cartRef = useRef<HTMLDivElement>(null);
-  const { items, updateQuantity, removeItem } = useCart();
+  const { items, updateQuantity, removeItem, clearCart } = useCart();
+  const { data: session } = useSession();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false)
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -22,8 +27,53 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
     navigator.clipboard.writeText("0096521912");
   };
 
+    const handlePayment = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/notification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items,
+          total,
+          customerName: session?.user?.name || undefined,
+          customerEmail: session?.user?.email || undefined
+        }),
+      });
+
+      if (response.ok) {
+            toast({
+              title: 'Order Placed!',
+              description: 'You will receive a confirmation email shortly.',
+            });
+            clearCart();
+           setIsOpen(false);
+        } else {
+             const errorData = await response.json()
+            console.error('Failed to send email:', errorData.message);
+            toast({
+              title: 'Error',
+              description: 'Failed to place order. Please try again.',
+              variant: 'destructive',
+            });
+        }
+     }
+     catch (error) {
+        console.error('Error sending email:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to place order. Please try again.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false)
+      }
+  };
+
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent 
         side="right"
         className="w-full sm:max-w-lg"
@@ -59,6 +109,15 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
                 <span>₦{total.toLocaleString()}</span>
               </div>
 
+              <Button 
+                variant="destructive" 
+                className="w-full mb-4"
+                onClick={clearCart}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Clear Cart
+              </Button>
+
               <div className="bg-white p-6 rounded-lg shadow-sm border">
                 <h3 className="text-lg font-semibold mb-4">Payment Information</h3>
                 <div className="space-y-4">
@@ -93,6 +152,14 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
                   </div>
                 </div>
               </div>
+
+              <Button 
+                onClick={handlePayment} 
+                disabled={isLoading}
+                className="mt-4 w-full"
+              >
+                {isLoading ? "Placing Order..." : "Complete Order"}
+              </Button>
             </div>
           )}
 

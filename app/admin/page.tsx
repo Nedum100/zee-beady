@@ -3,13 +3,13 @@
 import { useAuthRedirect } from '@/lib/auth/useAuthRedirect';
 import { useSession } from 'next-auth/react';
 import { redirect, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { Plus, Package, Edit, Trash2 } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 export default function AdminPage() {
   const { isLoading } = useAuthRedirect(true);
   const { data: session } = useSession();
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -20,51 +20,45 @@ export default function AdminPage() {
     redirect('/dashboard');
   }
 
-  const handleProductsView = async () => {
-    try {
-      const response = await fetch('/api/products', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch products');
-      }
-
-      router.push('/admin/products');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+  const adminActions = [
+    {
+      title: 'Add New Product',
+      description: 'Create a new product listing',
+      icon: <Plus className="h-6 w-6" />,
+      href: '/admin/add-product',
+      color: 'bg-green-600 hover:bg-green-700'
+    },
+    {
+      title: 'View Products',
+      description: 'View and manage all products',
+      icon: <Package className="h-6 w-6" />,
+      href: '/admin/products',
+      color: 'bg-blue-600 hover:bg-blue-700'
     }
-  };
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-      <div className="mt-6 flex justify-between">
-        <button
-          onClick={handleProductsView}
-          className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors duration-200"
-        >
-          View Products
-        </button>
-        <button
-          onClick={() => router.push('/admin/products/edit')}
-          className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-700 transition-colors duration-200"
-        >
-          Edit Products
-        </button>
-        <button
-          onClick={() => router.push('/admin/products/delete')}
-          className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors duration-200"
-        >
-          Delete Products
-        </button>
+      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+      
+      <div className="grid md:grid-cols-2 gap-6">
+        {adminActions.map((action) => (
+          <Card 
+            key={action.title}
+            className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => router.push(action.href)}
+          >
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-full text-white ${action.color}`}>
+                {action.icon}
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">{action.title}</h2>
+                <p className="text-gray-600">{action.description}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
       </div>
     </div>
   );
