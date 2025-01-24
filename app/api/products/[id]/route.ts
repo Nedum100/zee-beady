@@ -81,7 +81,7 @@ export async function DELETE(
     const session = await getServerSession();
     const authHeader = request.headers.get('Authorization');
     const role = authHeader?.split(' ')[1];
-    const productId = params.id;
+    const productId = await params.id;
 
     if (!session?.user || role !== 'admin') {
       console.log('Delete auth failed:', { 

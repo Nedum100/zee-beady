@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import ProductCard from '@/components/ProductCard';
 import ProductActions from '@/components/ProductActions';
-import { useToast } from '@/components/ui/use-toast';
+import { useAuthRedirect } from '@/lib/auth/useAuthRedirect';
 
 interface Product {
   _id: string;
@@ -20,6 +22,7 @@ interface Product {
 }
 
 export default function AdminProductsPage() {
+  const { isLoading: authLoading } = useAuthRedirect(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -46,7 +49,7 @@ export default function AdminProductsPage() {
     fetchProducts();
   }, []);
 
-  if (isLoading) {
+  if (isLoading || authLoading) {
     return <div>Loading...</div>;
   }
 
@@ -74,4 +77,4 @@ export default function AdminProductsPage() {
       </div>
     </div>
   );
-} 
+}
