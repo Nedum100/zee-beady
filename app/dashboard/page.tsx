@@ -1,15 +1,18 @@
 'use client';
 
+import { Suspense } from 'react';
+import { SessionProvider } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { useSession, signIn, SessionProvider } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ShoppingCart, Users, TrendingUp, Activity, Package, CreditCard } from 'lucide-react';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { Card } from '@/components/ui/card';
 
-function DashboardPage() {
+function DashboardContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [stats, setStats] = useState({
     totalSales: 0,
     totalOrders: 0,
@@ -134,10 +137,13 @@ function DashboardPage() {
   );
 }
 
+// Only one default export
 export default function Page() {
   return (
     <SessionProvider>
-      <DashboardPage />
+      <Suspense fallback={<div>Loading...</div>}>
+        <DashboardContent />
+      </Suspense>
     </SessionProvider>
   );
 }

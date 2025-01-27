@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import ProductCard from '@/components/ProductCard';
 import ProductActions from '@/components/ProductActions';
 import { useAuthRedirect } from '@/lib/auth/useAuthRedirect';
+import { Suspense } from 'react';
 
 interface Product {
   _id: string;
@@ -21,12 +22,13 @@ interface Product {
   cloudinaryId: string;
 }
 
-export default function AdminProductsPage() {
+function ProductsContent() {
   const { isLoading: authLoading } = useAuthRedirect(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
+  const searchParams = useSearchParams();
 
   const fetchProducts = async () => {
     try {
@@ -76,5 +78,13 @@ export default function AdminProductsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }

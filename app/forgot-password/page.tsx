@@ -1,9 +1,23 @@
 import { ForgotPasswordForm } from "@/components/ForgotPasswordForm";
 
-export default function ForgotPasswordPage() {
+'use client';
+
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+
+function ForgotPasswordContent() {
+  const searchParams = useSearchParams();
   return (
     <div className="container mx-auto max-w-md px-4 py-8">
       <ForgotPasswordForm />
     </div>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ForgotPasswordContent />
+    </Suspense>
   );
 } 
