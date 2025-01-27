@@ -55,7 +55,7 @@ export default function ContactForm() {
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsSubmitting(false);

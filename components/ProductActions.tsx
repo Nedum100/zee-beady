@@ -66,7 +66,7 @@ export default function ProductActions({ product, onUpdate }: ProductActionsProp
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to update product",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsLoading(false);
@@ -104,7 +104,7 @@ export default function ProductActions({ product, onUpdate }: ProductActionsProp
       toast({
         title: "Error",
         description: "Failed to delete product",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     }
   };

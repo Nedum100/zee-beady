@@ -5,7 +5,6 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
-import bcrypt from "bcryptjs";
 
 interface CustomUser {
   id: string;
@@ -38,7 +37,7 @@ const handler = NextAuth({
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any) {
+      async authorize(credentials) {
         try {
           await connectToDatabase();
           const user = await User.findOne({ email: credentials?.email });
@@ -52,8 +51,6 @@ const handler = NextAuth({
             throw new Error("Invalid email or password");
           }
 
-          console.log('Found user:', user);
-
           return {
             id: user._id.toString(),
             email: user.email,
@@ -61,8 +58,7 @@ const handler = NextAuth({
             role: user.role,
           };
         } catch (error) {
-          console.error("Auth error:", error);
-          throw error;
+          throw new Error(error instanceof Error ? error.message : "Authentication failed");
         }
       },
     }),
@@ -83,7 +79,7 @@ const handler = NextAuth({
         session.user.role = token.role as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.image = token.picture as string | undefined;
+       session.user.image = token.picture as string | undefined;
       }
       console.log('Session callback - session:', session);
       return session;
@@ -100,7 +96,6 @@ const handler = NextAuth({
       return token;
     },
   },
-  
   debug: process.env.NODE_ENV === 'development',
 });
 

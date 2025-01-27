@@ -1,13 +1,13 @@
 'use client';
 
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import ProductGrid from '@/components/ProductGrid';
 import { Product } from '@/types/product';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/useDebounce';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams?.get('q') ?? '';
   const [searchQuery, setSearchQuery] = useState(initialQuery);
@@ -66,5 +66,13 @@ export default function SearchPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }

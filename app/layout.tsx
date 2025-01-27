@@ -6,6 +6,7 @@ import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/Footer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Providers } from './providers'; // Import Providers
+import { LoadingBar } from '@/components/LoadingBar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ErrorBoundary>
           <Providers>
+            <LoadingBar />
             <Navigation />
             <main className="min-h-screen">{children}</main>
             <Toaster />

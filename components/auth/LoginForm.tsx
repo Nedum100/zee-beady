@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -31,7 +32,7 @@ export function LoginForm() {
         toast({
           title: "Error",
           description: result.error === "CredentialsSignin" ? "Invalid credentials" : result.error,
-          variant: "destructive",
+          className: "bg-destructive text-destructive-foreground"
         });
       } else {
         // Successful login
@@ -47,7 +48,7 @@ export function LoginForm() {
       toast({
         title: "Error",
         description: "Something went wrong",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsLoading(false);

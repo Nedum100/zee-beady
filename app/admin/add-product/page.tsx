@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast"
 
 const categories = [
   { value: 'waist-beads', label: 'Waist Beads' },
@@ -13,6 +14,7 @@ const categories = [
 
 export default function AddProduct() {
   const router = useRouter();
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -39,8 +41,17 @@ export default function AddProduct() {
       }
     } catch (error) {
       console.error('Error adding product:', error);
+      handleError()
     }
   };
+
+  const handleError = () => {
+    toast({
+      title: "Error",
+      description: "Failed to add product",
+      className: "bg-destructive text-destructive-foreground"
+    })
+  }
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">

@@ -86,14 +86,18 @@ export default function AddProductForm() {
       });
       form.reset();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add product",
-        variant: "destructive",
-      });
+      handleError();
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleError = () => {
+    toast({
+      title: "Error",
+      description: "Failed to add product",
+      className: "bg-destructive text-destructive-foreground"
+    });
   };
 
   return (

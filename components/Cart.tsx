@@ -56,7 +56,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
             toast({
               title: 'Error',
               description: 'Failed to place order. Please try again.',
-              variant: 'destructive',
+              className: "bg-destructive text-destructive-foreground"
             });
         }
      }
@@ -65,7 +65,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
         toast({
           title: 'Error',
           description: 'Failed to place order. Please try again.',
-          variant: 'destructive',
+          className: "bg-destructive text-destructive-foreground"
         });
       } finally {
         setIsLoading(false)

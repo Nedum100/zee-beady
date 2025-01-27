@@ -34,7 +34,7 @@ export function ForgotPasswordForm() {
       toast({
         title: "Error",
         description: "Failed to send reset link. Please try again.",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsLoading(false);

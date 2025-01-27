@@ -69,7 +69,7 @@ export default function SignupPage() {
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to create account',
-        variant: 'destructive',
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsLoading(false);

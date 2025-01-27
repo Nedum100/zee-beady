@@ -1,18 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+
+function ResetPasswordContent() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams?.get("token") || '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +28,16 @@ export default function ResetPasswordPage() {
       toast({
         title: "Error",
         description: "Passwords do not match",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
+      });
+      return;
+    }
+
+    if (!token) {
+      toast({
+        title: "Error",
+        description: "Invalid reset token",
+        className: "bg-destructive text-destructive-foreground"
       });
       return;
     }
@@ -47,7 +64,7 @@ export default function ResetPasswordPage() {
       toast({
         title: "Error",
         description: "Failed to reset password. Please try again.",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsLoading(false);

@@ -38,7 +38,7 @@ export default function AdminProductsPage() {
       toast({
         title: "Error",
         description: "Failed to fetch products",
-        variant: "destructive",
+        className: "bg-destructive text-destructive-foreground"
       });
     } finally {
       setIsLoading(false);

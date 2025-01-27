@@ -26,12 +26,16 @@ export default function CheckoutButton() {
         description: "Account number copied to clipboard",
       });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to copy account number",
-        variant: "destructive",
-      });
+      handleError();
     }
+  };
+
+  const handleError = () => {
+    toast({
+      title: "Error",
+      description: "Failed to copy account number",
+      className: "bg-destructive text-destructive-foreground"
+    });
   };
 
   return (
