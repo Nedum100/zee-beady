@@ -1,9 +1,8 @@
-import { ForgotPasswordForm } from "@/components/ForgotPasswordForm";
-
 'use client';
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { ForgotPasswordForm } from "@/components/ForgotPasswordForm";
 
 function ForgotPasswordContent() {
   const searchParams = useSearchParams();
