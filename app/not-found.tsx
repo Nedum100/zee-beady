@@ -1,15 +1,7 @@
-'use client';
-
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-
-
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-
-function NotFoundContent() {
-  const searchParams = useSearchParams();
+export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
@@ -21,13 +13,5 @@ function NotFoundContent() {
         <Link href="/">Go back home</Link>
       </Button>
     </div>
-  );
-}
-
-export default function NotFound() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <NotFoundContent />
-    </Suspense>
   );
 }
