@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/lib/cart';
 import { formatPrice } from '@/lib/utils';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 interface Product {
   _id: string;
@@ -20,11 +22,12 @@ interface Product {
   stock: number;
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
   const { isLoading } = useAuthRedirect(true);
   const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const { addItem } = useCart();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     fetchProducts();
@@ -116,5 +119,13 @@ export default function ProductsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }

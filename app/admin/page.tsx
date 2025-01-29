@@ -2,14 +2,16 @@
 
 import { useAuthRedirect } from '@/lib/auth/useAuthRedirect';
 import { useSession } from 'next-auth/react';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Package, Edit, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Suspense } from 'react';
 
-export default function AdminPage() {
+function AdminContent() {
   const { isLoading } = useAuthRedirect(true);
   const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -61,5 +63,13 @@ export default function AdminPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminContent />
+    </Suspense>
   );
 }
