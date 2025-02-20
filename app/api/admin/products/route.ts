@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
+import { connectToDatabase } from '@/lib/db';
 import Product from '@/models/Product';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
+    await connectToDatabase();
+    
+    const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
+    
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -16,7 +21,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    await connectDB();
     const productData = await request.json();
     const product = await Product.create(productData);
 
@@ -32,8 +36,8 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    await connectDB();
-    const products = await Product.find({});
+    await connectToDatabase();
+    const products = await Product.find().lean();
     return NextResponse.json(products);
   } catch (error: any) {
     console.error('Fetch products error:', error);
