@@ -52,16 +52,16 @@ function ProductsContent() {
   }, []);
 
   if (isLoading || authLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-gray-900 dark:text-white">Loading...</div>;
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Products Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products Management</h1>
         <Button 
           onClick={() => router.push('/admin/add-product')}
-          className="bg-green-600 hover:bg-green-700"
+          className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white"
         >
           <Plus className="mr-2 h-4 w-4" /> Add New Product
         </Button>
@@ -69,7 +69,10 @@ function ProductsContent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div key={product._id} className="relative">
+          <div 
+            key={product._id} 
+            className="relative bg-white dark:bg-[#111827] rounded-lg shadow-md transition-colors duration-200 border border-gray-200 dark:border-gray-800"
+          >
             <ProductCard product={product} />
             <div className="absolute top-2 right-2">
               <ProductActions product={product} onUpdate={fetchProducts} />
@@ -83,8 +86,10 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ProductsContent />
-    </Suspense>
+    <div className="h-full w-full">
+      <Suspense fallback={<div className="text-gray-900 dark:text-white">Loading...</div>}>
+        <ProductsContent />
+      </Suspense>
+    </div>
   );
 }

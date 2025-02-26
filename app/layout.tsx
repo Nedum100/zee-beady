@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Providers } from './providers'; // Import Providers
 import { LoadingBar } from '@/components/LoadingBar';
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,15 +23,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ErrorBoundary>
-          <Providers>
-            <LoadingBar />
-            <Navigation />
-            <main className="min-h-screen">{children}</main>
-            <Toaster />
-            <Footer />
-          </Providers>
-        </ErrorBoundary>
+      <body>
+        <ThemeProvider>
+          <ErrorBoundary>
+            <Providers>
+              <LoadingBar />
+              <Navigation />
+              <main className="min-h-screen">{children}</main>
+              <Toaster />
+              <Footer />
+            </Providers>
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
-    </html>  );}
+    </html>
+  );
+}

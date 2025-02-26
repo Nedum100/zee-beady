@@ -8,6 +8,7 @@ import { signOut, useSession } from "next-auth/react";
 import Cart from "@/components/Cart";
 import { useCart } from "@/lib/cart";
 import { useRouter } from 'next/navigation';
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +26,7 @@ export function Navigation() {
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="bg-background border-b sticky top-0 z-50 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -66,8 +67,8 @@ export function Navigation() {
                 )}
                 <div className="flex items-center space-x-4">
                   <Button
-                    variant="ghost"
-                    className="relative"
+                    variant="outline"
+                    className="relative bg-background text-foreground hover:text-blue-600 dark:hover:text-blue-400"
                     onClick={() => setIsCartOpen(true)}
                   >
                     <ShoppingCart className="h-6 w-6" />
@@ -114,6 +115,7 @@ export function Navigation() {
             >
               <Search className="h-5 w-5" />
             </Button>
+            <ThemeToggle className="text-gray-700 dark:text-white hover:text-blue-600 dark:hover:text-blue-400" />
           </div>
 
           {/* Mobile Menu Button */}
@@ -126,8 +128,8 @@ export function Navigation() {
                   </Link>
                 )}
                 <Button
-                  variant="ghost"
-                  className="relative"
+                  variant="outline"
+                  className="relative bg-background text-foreground hover:text-blue-600 dark:hover:text-blue-400"
                   onClick={() => setIsCartOpen(true)}
                 >
                   <ShoppingCart className="h-6 w-6" />

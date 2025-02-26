@@ -81,16 +81,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 to-white px-4 py-12">
-      <Card className="max-w-lg w-full p-10 shadow-xl border border-gray-200 bg-white rounded-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 px-4 py-12">
+      <Card className="max-w-lg w-full p-10 shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg">
         <div className="text-center mb-8">
-          <h2 className="text-4xl font-extrabold text-blue-700">Create Your Account</h2>
-          <p className="text-gray-500 mt-2">Join our community and explore!</p>
+          <h2 className="text-4xl font-extrabold text-blue-700 dark:text-blue-400">Create Your Account</h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Join our community and explore!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="text-red-500 mb-4 text-sm">
+            <div className="text-red-500 dark:text-red-400 mb-4 text-sm">
               {error}
             </div>
           )}
@@ -100,7 +100,7 @@ export default function SignupPage() {
               type="text"
               required
               placeholder="Full Name"
-              className="focus:ring-blue-500 focus:border-blue-500"
+              className="focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
             />
           </div>
 
@@ -110,7 +110,7 @@ export default function SignupPage() {
               type="email"
               required
               placeholder="Email address"
-              className="focus:ring-blue-500 focus:border-blue-500"
+              className="focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
             />
           </div>
 
@@ -120,7 +120,7 @@ export default function SignupPage() {
               type="password"
               required
               placeholder="Password"
-              className="focus:ring-blue-500 focus:border-blue-500"
+              className="focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
             />
           </div>
 
@@ -130,13 +130,13 @@ export default function SignupPage() {
               type="password"
               required
               placeholder="Confirm Password"
-              className="focus:ring-blue-500 focus:border-blue-500"
+              className="focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
             />
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -151,9 +151,9 @@ export default function SignupPage() {
             )}
           </Button>
 
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 hover:text-blue-500">
+            <Link href="/login" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
               Sign in
             </Link>
           </p>

@@ -76,11 +76,11 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
      <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent 
         side="right"
-        className="w-full sm:max-w-lg"
+        className="w-full sm:max-w-lg bg-background dark:bg-gray-900"
       >
         <SheetHeader className="space-y-2 mb-4">
-          <SheetTitle className="text-2xl">Shopping Cart</SheetTitle>
-          <SheetDescription>
+          <SheetTitle className="text-2xl text-foreground dark:text-gray-100">Shopping Cart</SheetTitle>
+          <SheetDescription className="dark:text-gray-400">
             Review your items and proceed to payment
           </SheetDescription>
         </SheetHeader>
@@ -88,7 +88,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-4 top-4"
+          className="absolute right-4 top-4 text-foreground dark:text-gray-400"
           onClick={() => setIsOpen(false)}
           aria-label="Close cart"
         >
@@ -97,14 +97,14 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
 
         <div className="mt-8 space-y-6">
           {items.map((item) => (
-            <div key={item._id} className="flex gap-4 border-b pb-4">
+            <div key={item._id} className="flex gap-4 border-b dark:border-gray-800 pb-4">
               {/* Item content */}
             </div>
           ))}
 
           {items.length > 0 && (
             <div className="mt-4">
-              <div className="flex justify-between text-lg font-semibold mb-4">
+              <div className="flex justify-between text-lg font-semibold mb-4 text-foreground dark:text-gray-100">
                 <span>Total:</span>
                 <span>₦{total.toLocaleString()}</span>
               </div>
@@ -118,21 +118,21 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
                 Clear Cart
               </Button>
 
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
-                <h3 className="text-lg font-semibold mb-4">Payment Information</h3>
+              <div className="bg-card dark:bg-gray-800 p-6 rounded-lg shadow-sm border dark:border-gray-700">
+                <h3 className="text-lg font-semibold mb-4 text-foreground dark:text-gray-100">Payment Information</h3>
                 <div className="space-y-4">
-                  <div className="border-b pb-4">
-                    <p className="text-gray-600 mb-2">Please transfer the total amount to:</p>
+                  <div className="border-b dark:border-gray-700 pb-4">
+                    <p className="text-muted-foreground dark:text-gray-400 mb-2">Please transfer the total amount to:</p>
                     <div className="space-y-2">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-foreground dark:text-gray-300">
                         <span className="font-medium">Bank Name:</span>
                         <span>Sterling Bank</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-foreground dark:text-gray-300">
                         <span className="font-medium">Account Name:</span>
                         <span>Zigwai Bernice Dogo</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-foreground dark:text-gray-300">
                         <span className="font-medium">Account Number:</span>
                         <div className="flex items-center gap-2">
                           <span className="font-mono">0096521912</span>
@@ -140,7 +140,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
                             variant="outline"
                             size="sm"
                             onClick={handleCopyAccountNumber}
-                            className="flex items-center gap-1"
+                            className="flex items-center gap-1 dark:border-gray-600 dark:hover:bg-gray-700"
                             aria-label="Copy account number"
                           >
                             <Copy className="h-4 w-4" />
@@ -156,7 +156,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
               <Button 
                 onClick={handlePayment} 
                 disabled={isLoading}
-                className="mt-4 w-full"
+                className="mt-4 w-full bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700"
               >
                 {isLoading ? "Placing Order..." : "Complete Order"}
               </Button>
@@ -165,7 +165,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
 
           {items.length === 0 && (
             <div className="text-center py-6">
-              <p className="text-gray-500">Your cart is empty</p>
+              <p className="text-muted-foreground dark:text-gray-400">Your cart is empty</p>
             </div>
           )}
         </div>
