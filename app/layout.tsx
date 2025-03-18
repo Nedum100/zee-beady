@@ -8,6 +8,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Providers } from './providers'; // Import Providers
 import { LoadingBar } from '@/components/LoadingBar';
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { SearchParamsWrapper } from '@/components/SearchParamsWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,11 +28,13 @@ export default function RootLayout({
         <ThemeProvider>
           <ErrorBoundary>
             <Providers>
-              <LoadingBar />
-              <Navigation />
-              <main className="min-h-screen">{children}</main>
-              <Toaster />
-              <Footer />
+              <SearchParamsWrapper>
+                <LoadingBar />
+                <Navigation />
+                <main className="min-h-screen">{children}</main>
+                <Toaster />
+                <Footer />
+              </SearchParamsWrapper>
             </Providers>
           </ErrorBoundary>
         </ThemeProvider>

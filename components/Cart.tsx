@@ -2,11 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetDescription
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
     navigator.clipboard.writeText("0096521912");
   };
 
-    const handlePayment = async () => {
+  const handlePayment = async () => {
     setIsLoading(true);
     try {
       const response = await fetch('/api/notification', {
@@ -44,37 +44,37 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
       });
 
       if (response.ok) {
-            toast({
-              title: 'Order Placed!',
-              description: 'You will receive a confirmation email shortly.',
-            });
-            clearCart();
-           setIsOpen(false);
-        } else {
-             const errorData = await response.json()
-            console.error('Failed to send email:', errorData.message);
-            toast({
-              title: 'Error',
-              description: 'Failed to place order. Please try again.',
-              className: "bg-destructive text-destructive-foreground"
-            });
-        }
-     }
-     catch (error) {
-        console.error('Error sending email:', error);
+        toast({
+          title: 'Order Placed!',
+          description: 'You will receive a confirmation email shortly.',
+        });
+        clearCart();
+        setIsOpen(false);
+      } else {
+        const errorData = await response.json()
+        console.error('Failed to send email:', errorData.message);
         toast({
           title: 'Error',
           description: 'Failed to place order. Please try again.',
           className: "bg-destructive text-destructive-foreground"
         });
-      } finally {
-        setIsLoading(false)
       }
+    }
+    catch (error) {
+      console.error('Error sending email:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to place order. Please try again.',
+        className: "bg-destructive text-destructive-foreground"
+      });
+    } finally {
+      setIsLoading(false)
+    }
   };
 
   return (
-     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent 
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetContent
         side="right"
         className="w-full sm:max-w-lg bg-background dark:bg-gray-900"
       >
@@ -84,16 +84,6 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
             Review your items and proceed to payment
           </SheetDescription>
         </SheetHeader>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-4 top-4 text-foreground dark:text-gray-400"
-          onClick={() => setIsOpen(false)}
-          aria-label="Close cart"
-        >
-          <X className="h-4 w-4" />
-        </Button>
 
         <div className="mt-8 space-y-6">
           {items.map((item) => (
@@ -109,8 +99,8 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
                 <span>₦{total.toLocaleString()}</span>
               </div>
 
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 className="w-full mb-4"
                 onClick={clearCart}
               >
@@ -153,8 +143,8 @@ export default function Cart({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen
                 </div>
               </div>
 
-              <Button 
-                onClick={handlePayment} 
+              <Button
+                onClick={handlePayment}
                 disabled={isLoading}
                 className="mt-4 w-full bg-primary hover:bg-primary/90 dark:bg-blue-600 dark:hover:bg-blue-700"
               >

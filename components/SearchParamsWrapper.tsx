@@ -1,8 +1,12 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function SearchParamsWrapper({ children }: { children: React.ReactNode }) {
-  const searchParams = useSearchParams();
-  return <div>{children}</div>;
+export function SearchParamsWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      {children}
+    </Suspense>
+  );
 }
