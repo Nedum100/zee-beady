@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import SearchParamsWrapper from '@/components/SearchParamsWrapper';
+import { SearchParamsWrapper } from '@/components/SearchParamsWrapper';
 
 export default function NotFound() {
   return (
